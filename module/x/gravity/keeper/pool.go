@@ -25,7 +25,7 @@ func (k Keeper) createSendToEthereum(ctx sdk.Context, sender sdk.AccAddress, cou
 	// If the coin is a gravity voucher, burn the coins. If not, check if there is a deployed ERC20 contract representing it.
 	// If there is, lock the coins.
 
-	isCosmosOriginated, tokenContract, err := k.DenomToERC20Lookup(ctx, totalAmount.Denom)
+	_, tokenContract, err := k.DenomToERC20Lookup(ctx, totalAmount.Denom)
 	if err != nil {
 		return 0, err
 	}
@@ -35,11 +35,11 @@ func (k Keeper) createSendToEthereum(ctx sdk.Context, sender sdk.AccAddress, cou
 	}
 
 	// If it is no a cosmos-originated asset we burn
-	if !isCosmosOriginated {
+	//if !isCosmosOriginated {
 		if err := k.bankKeeper.BurnCoins(ctx, types.ModuleName, totalInVouchers); err != nil {
 			panic(err)
 		}
-	}
+	//}
 
 	// get next tx id from keeper
 	nextID := k.incrementLastSendToEthereumIDKey(ctx)
