@@ -85,14 +85,14 @@ func (k Keeper) cancelSendToEthereum(ctx sdk.Context, id uint64, s string) error
 	totalToRefund := send.Erc20Token.GravityCoin()
 	totalToRefund.Amount = totalToRefund.Amount.Add(send.Erc20Fee.Amount)
 	totalToRefundCoins := sdk.NewCoins(totalToRefund)
-	isCosmosOriginated, _ := k.ERC20ToDenomLookup(ctx, send.Erc20Token.Contract)
+	//isCosmosOriginated, _ := k.ERC20ToDenomLookup(ctx, send.Erc20Token.Contract)
 
 	// If it is not cosmos-originated the coins are minted
-	if !isCosmosOriginated {
+	//if !isCosmosOriginated {
 		if err := k.bankKeeper.MintCoins(ctx, types.ModuleName, totalToRefundCoins); err != nil {
 			return sdkerrors.Wrapf(err, "mint vouchers coins: %s", totalToRefundCoins)
 		}
-	}
+	//}
 
 	if err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, sender, totalToRefundCoins); err != nil {
 		return sdkerrors.Wrap(err, "sending coins from module account")

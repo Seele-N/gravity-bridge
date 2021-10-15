@@ -40,11 +40,11 @@ func (a EthereumEventProcessor) Handle(ctx sdk.Context, eve types.EthereumEvent)
 			if err := a.DetectMaliciousSupply(ctx, denom, event.Amount); err != nil {
 				return err
 			}
+		}
 
-			// if it is not cosmos originated, mint the coins (aka vouchers)
-			if err := a.bankKeeper.MintCoins(ctx, types.ModuleName, coins); err != nil {
-				return sdkerrors.Wrapf(err, "mint vouchers coins: %s", coins)
-			}
+		// mint the coins (aka vouchers)
+		if err := a.bankKeeper.MintCoins(ctx, types.ModuleName, coins); err != nil {
+			return sdkerrors.Wrapf(err, "mint vouchers coins: %s", coins)
 		}
 
 		if err := a.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addr, coins); err != nil {
