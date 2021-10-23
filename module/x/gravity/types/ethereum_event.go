@@ -126,7 +126,7 @@ func (stce *SendToCosmosEvent) Validate() error {
 	}
 
 	if !common.IsHexAddress(stce.CosmosReceiver) {
-		return sdkerrors.Wrap(ErrInvalid, "seele receiver", stce.CosmosReceiver)
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, stce.CosmosReceiver)
 	}
 	/*
 		if _, err := sdk.AccAddressFromBech32(stce.CosmosReceiver); err != nil {
