@@ -33,7 +33,9 @@ func (a EthereumEventProcessor) Handle(ctx sdk.Context, eve types.EthereumEvent)
 	case *types.SendToCosmosEvent:
 		// Check if coin is Cosmos-originated asset and get denom
 		isCosmosOriginated, denom := a.keeper.ERC20ToDenomLookup(ctx, event.TokenContract)
-		addr, _ := sdk.AccAddressFromBech32(event.CosmosReceiver)
+		evmRecv := common.HexToAddress(event.CosmosReceiver)
+		addr := sdk.AccAddress(evmRecv.Bytes())
+		//addr, _ := sdk.AccAddressFromBech32(event.CosmosReceiver)
 		coins := sdk.Coins{sdk.NewCoin(denom, event.Amount)}
 
 		if !isCosmosOriginated {

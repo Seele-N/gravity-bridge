@@ -31,14 +31,15 @@ func (m *EthereumEventVoteRecord) UnpackInterfaces(unpacker types.AnyUnpacker) e
 //////////
 
 func (stce *SendToCosmosEvent) Hash() tmbytes.HexBytes {
-	rcv, _ := sdk.AccAddressFromBech32(stce.CosmosReceiver)
+	//rcv, _ := sdk.AccAddressFromBech32(stce.CosmosReceiver)
 	path := bytes.Join(
 		[][]byte{
 			sdk.Uint64ToBigEndian(stce.EventNonce),
 			common.HexToAddress(stce.TokenContract).Bytes(),
 			stce.Amount.BigInt().Bytes(),
 			common.Hex2Bytes(stce.EthereumSender),
-			rcv.Bytes(),
+			common.Hex2Bytes(stce.CosmosReceiver),
+			//rcv.Bytes(),
 			sdk.Uint64ToBigEndian(stce.EthereumHeight),
 		},
 		[]byte{},
@@ -123,9 +124,15 @@ func (stce *SendToCosmosEvent) Validate() error {
 	if !common.IsHexAddress(stce.EthereumSender) {
 		return sdkerrors.Wrap(ErrInvalid, "ethereum sender")
 	}
-	if _, err := sdk.AccAddressFromBech32(stce.CosmosReceiver); err != nil {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, stce.CosmosReceiver)
+
+	if !common.IsHexAddress(stce.CosmosReceiver) {
+		return sdkerrors.Wrap(ErrInvalid, "seele receiver", stce.CosmosReceiver)
 	}
+	/*
+		if _, err := sdk.AccAddressFromBech32(stce.CosmosReceiver); err != nil {
+			return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, stce.CosmosReceiver)
+		}
+	*/
 	return nil
 }
 
