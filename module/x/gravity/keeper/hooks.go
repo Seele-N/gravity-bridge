@@ -78,5 +78,10 @@ func (k *Keeper) SetHooks(sh types.GravityHooks) *Keeper {
 
 	k.hooks = sh
 
+	k.EthereumEventProcessor = EthereumEventProcessor{
+		keeper:     *k,
+		bankKeeper: k.bankKeeper,
+	}
+
 	return k
 }

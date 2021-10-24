@@ -11,9 +11,15 @@ import (
 )
 
 func (k Keeper) getCosmosOriginatedDenom(ctx sdk.Context, tokenContract string) (string, bool) {
+
 	store := ctx.KVStore(k.storeKey)
 	bz := store.Get(types.MakeERC20ToDenomKey(tokenContract))
 
+	if bz != nil {
+		return string(bz), true
+	}
+	tokenContract = strings.ToLower(tokenContract)
+	bz = store.Get(types.MakeERC20ToDenomKey(tokenContract))
 	if bz != nil {
 		return string(bz), true
 	}
