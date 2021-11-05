@@ -107,12 +107,12 @@ func (k Keeper) GetLatestSignerSetTx(ctx sdk.Context) *types.SignerSetTx {
 }
 
 // GetLastPowerOfValidator retturn the power by avladdress
-func (k Keeper) GetLastPowerOfValidator(ctx sdk.Context, valAddress ValAddress) int64 {
+func (k Keeper) GetLastPowerOfValidator(ctx sdk.Context, valAddress sdk.ValAddress) int64 {
 	key := types.MakeSignerSetTxKey(k.GetLatestSignerSetTxNonce(ctx))
 	otx := k.GetOutgoingTx(ctx, key)
 	out, _ := otx.(*types.SignerSetTx)
 	ethAddr := k.GetValidatorEthereumAddress(ctx, valAddress).Hex()
-	for _, es := range out {
+	for _, es := range out.Signers {
 		if ethAddr == es.EthereumAddress {
 			return int64(es.Power)
 		}
@@ -121,15 +121,15 @@ func (k Keeper) GetLastPowerOfValidator(ctx sdk.Context, valAddress ValAddress) 
 }
 
 // GetLatestTotalPowerOfSignerSetTx returns power of the latest validator set in state
-func (k Keeper) GetLatestTotalPowerOfSignerSetTx(ctx sdk.Context) int64 {
+func (k Keeper) GetLatestTotalPowerOfSignerSetTx(ctx sdk.Context) sdk.Int {
 	key := types.MakeSignerSetTxKey(k.GetLatestSignerSetTxNonce(ctx))
 	otx := k.GetOutgoingTx(ctx, key)
 	out, _ := otx.(*types.SignerSetTx)
 	power := int64(0)
-	for _, es := range out {
+	for _, es := range out.Signers {
 		power += int64(es.Power)
 	}
-	return power
+	return sdk.NewInt(power)
 }
 
 //////////////////////////////

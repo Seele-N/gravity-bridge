@@ -70,14 +70,14 @@ func (k Keeper) TryEventVoteRecord(ctx sdk.Context, eventVoteRecord *types.Ether
 
 		// Sum the current powers of all validators who have voted and see if it passes the current threshold
 		// TODO: The different integer types and math here needs a careful review
-		requiredPower := types.EventVoteRecordPowerThreshold(GetLatestTotalPowerOfSignerSetTx(ctx))
-		requiredPower = types.EventVoteRecordPowerThreshold(k.StakingKeeper.GetLastTotalPower(ctx))
+		requiredPower := types.EventVoteRecordPowerThreshold(k.GetLatestTotalPowerOfSignerSetTx(ctx))
+		//requiredPower = types.EventVoteRecordPowerThreshold(k.StakingKeeper.GetLastTotalPower(ctx))
 		eventVotePower := sdk.NewInt(0)
 		for _, validator := range eventVoteRecord.Votes {
 			val, _ := sdk.ValAddressFromBech32(validator)
 
 			validatorPower := k.GetLastPowerOfValidator(ctx, val)
-			validatorPower = k.StakingKeeper.GetLastValidatorPower(ctx, val)
+			//validatorPower = k.StakingKeeper.GetLastValidatorPower(ctx, val)
 			// Add it to the attestation power's sum
 			eventVotePower = eventVotePower.Add(sdk.NewInt(validatorPower))
 			// If the power of all the validators that have voted on the attestation is higher or equal to the threshold,
